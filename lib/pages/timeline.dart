@@ -49,6 +49,8 @@ class _TimelineState extends State<Timeline> {
     super.initState();
     getTimeline();
 
+
+
   }
   handleTakePhoto() async {
     Navigator.pop(context);
@@ -162,6 +164,7 @@ class _TimelineState extends State<Timeline> {
 
 
   getTimeline() async {
+
     QuerySnapshot snapshot = await timelineRef
         .document(widget.currentUser.id)
         .collection('timelinePosts')
@@ -175,12 +178,12 @@ class _TimelineState extends State<Timeline> {
   }
 
 
-
   buildTimeline() {
     if (posts == null) {
       return circularProgress();
     } else if (posts.isEmpty) {
-      return Text("empty");
+      return  Text("empty");
+
     } else {
       return ListView(children: posts);
     }
@@ -191,16 +194,6 @@ class _TimelineState extends State<Timeline> {
       appBar: header(context, isAppTitle: true),
       body: RefreshIndicator(
           onRefresh: () => getTimeline(), child: buildTimeline()),
-
-      /* floatingActionButton: FloatingActionButton(
-        onPressed:(){ Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Upload(currentUser: currentUser,)),
-        );},
-
-        child: Icon(Icons.navigation),
-        backgroundColor: Colors.green,
-      ),*/
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.add_event,
         animatedIconTheme: IconThemeData(size: 22.0),

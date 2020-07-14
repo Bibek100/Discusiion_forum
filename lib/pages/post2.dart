@@ -146,7 +146,16 @@ class _PostState extends State<Post2> {
                 ),
               ),
             ) ,
-            subtitle:Text(user.username),
+            subtitle:GestureDetector(
+              onTap: ()=>showProfile(context,profileId: user.id),
+              child: Text(
+                username,
+                style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+            ) ,
             trailing: IconButton(
               onPressed:()=>"deltering post" ,
               icon:Icon(Icons.more_vert),
@@ -165,6 +174,7 @@ class _PostState extends State<Post2> {
           .collection('userPosts')
           .document(postId)
           .updateData({'likes.$currentUserId':false});
+      removeLikeFromActivityFeed();
       setState(() {
         likesCount -=1;
         isLiked=false;
@@ -196,10 +206,11 @@ class _PostState extends State<Post2> {
     //add a notification to the postOwner's activirt feed only if comment made by other user(to avoid getting
     //  notification from own
     bool isNotPostOwner=currentUserId !=ownerId;
+
     if(isNotPostOwner){
       activityFeedRef.
       document(ownerId)
-          .collection("feeditems")
+          .collection("feedItems")
           .document(postId)
           .setData({
         "type": "like",
@@ -215,10 +226,11 @@ class _PostState extends State<Post2> {
 
   removeLikeFromActivityFeed(){
     bool isNotPostOwner=currentUserId !=ownerId;
+
     if(isNotPostOwner){
       activityFeedRef.
       document(ownerId)
-          .collection("feeditems")
+          .collection("feedItems")
           .document(postId)
           .get().then((doc){
         if(doc.exists){
@@ -259,6 +271,9 @@ class _PostState extends State<Post2> {
   }
 
   buildPostFooter(){
+    setState(() {
+      buildComments();
+    });
     return Column(
       children: <Widget>[
         Row(

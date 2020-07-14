@@ -58,6 +58,7 @@ class _ProfileState extends State<Profile> {
         .getDocuments();
     setState(() {
       followerCount = snapshot.documents.length;
+
     });
   }
 
@@ -86,6 +87,7 @@ class _ProfileState extends State<Profile> {
       posts = snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
     });
   }
+
 
   Column buildCountColumn(String label, int count) {
     return Column(
@@ -150,10 +152,7 @@ class _ProfileState extends State<Profile> {
     // viewing your own profile - should show edit profile button
     bool isProfileOwner = currentUserId == widget.profileId;
     if (isProfileOwner) {
-      return buildButton(
-        text: "Edit Profile",
-        function: editProfile,
-      );
+      return Text("");
     } else if (isFollowing) {
       return buildButton(
         text: "Unfollow",
@@ -273,11 +272,12 @@ class _ProfileState extends State<Profile> {
                               buildCountColumn("following", followingCount),
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                          Column(
+
                             children: <Widget>[
                               buildProfileButton(),
-                        Container(
+                       /* Container(
                           width: 80.0,
                           height: 27.0,
                           padding: EdgeInsets.only(top: 2.0),
@@ -292,7 +292,7 @@ class _ProfileState extends State<Profile> {
                             ),
                             borderRadius: BorderRadius.circular(5.0),
                           ),
-                        ),
+                        ),*/
 
                             ],
                           ),
@@ -312,7 +312,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
-                Container(
+                /*Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(top: 4.0),
                   child: Text(
@@ -321,7 +321,7 @@ class _ProfileState extends State<Profile> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                ),*/
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(top: 2.0),
@@ -411,19 +411,53 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: header(context, titleText: "Profile"),
+      appBar: AppBar(
+        title:Text("My profile"),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected:choiceAction ,
+            itemBuilder: (BuildContext context){
+              return Constants.choices.map((String choice){
+                    return PopupMenuItem<String>(
+                      value:choice,
+                      child:Text(choice),
+                    );
+
+              }).toList();
+            },
+
+          )
+        ],
+
+      ),
       body: ListView(
 
         children: <Widget>[
           buildProfileHeader(),
-          Divider(),
+
           /*buildTogglePostOrientation(),*/
-          Divider(
-            height: 0.0,
-          ),
+
           buildProfilePosts(),
         ],
       ),
     );
   }
+  void choiceAction(String choice){
+ if(choice==Constants.Profile){
+   editProfile();
+ }else if(choice==Constants.SignOut){
+   logout();
+ }
+  }
+}
+class Constants{
+  static const String Profile = 'Edit Profile';
+  static const String SignOut = 'Sign Out';
+
+
+  static const List<String> choices = <String>[
+    Profile,
+    SignOut
+
+  ];
 }

@@ -22,7 +22,7 @@ class Post extends StatefulWidget {
   final String location;
   final String description;
   final String mediaUrl;
-  final Timestamp timestamp;
+
   final dynamic likes;
 
   Post({this.postId,
@@ -32,7 +32,7 @@ class Post extends StatefulWidget {
     this.description,
     this.mediaUrl,
     this.likes,
-    this.timestamp
+
   });
    factory Post.fromDocument(DocumentSnapshot doc){
      return Post(
@@ -41,7 +41,7 @@ class Post extends StatefulWidget {
        username: doc['username'],
        location: doc['location'],
        description: doc['description'],
-       timestamp: doc['timestamp'],
+
        mediaUrl: doc['mediaUrl'],
        likes: doc['likes'],
 
@@ -68,7 +68,7 @@ class Post extends StatefulWidget {
     username: this.username,
     location: this.location,
     description: this.description,
-    timestamp:this.timestamp,
+
     mediaUrl: this.mediaUrl,
     likes: this.likes,
     likesCount:getLikesCount(likes),
@@ -83,7 +83,7 @@ class _PostState extends State<Post> {
   final String location;
   final String description;
   final String mediaUrl;
-  final Timestamp timestamp;
+
   int likesCount;
   Map likes;
   bool isLiked;
@@ -103,7 +103,7 @@ class _PostState extends State<Post> {
     this.username,
     this.location,
     this.description,
-    this.timestamp,
+
     this.mediaUrl,
     this.likes,
     this.likesCount,
@@ -188,6 +188,7 @@ class _PostState extends State<Post> {
      .collection('userPosts')
      .document(postId)
      .updateData({'likes.$currentUserId':false});
+     removeLikeFromActivityFeed();
      setState(() {
        likesCount -=1;
        isLiked=false;
@@ -219,10 +220,11 @@ class _PostState extends State<Post> {
      //add a notification to the postOwner's activirt feed only if comment made by other user(to avoid getting
   //  notification from own
     bool isNotPostOwner=currentUserId !=ownerId;
+
     if(isNotPostOwner){
       activityFeedRef.
        document(ownerId)
-        .collection("feeditems")
+        .collection("feedItems")
         .document(postId)
         .setData({
       "type": "like",
@@ -238,10 +240,11 @@ class _PostState extends State<Post> {
 
   removeLikeFromActivityFeed(){
     bool isNotPostOwner=currentUserId !=ownerId;
+
     if(isNotPostOwner){
       activityFeedRef.
       document(ownerId)
-          .collection("feeditems")
+          .collection("feedItems")
           .document(postId)
           .get().then((doc){
         if(doc.exists){
@@ -343,13 +346,19 @@ class _PostState extends State<Post> {
                   ),
                   title: Text(location,
                     style: TextStyle(fontSize: 14.0, color: Colors.green),),
-                  subtitle: Text(timeago.format(timestamp.toDate())),
+                  subtitle: Text(
+                    username,
+                    style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
                   trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         isPostOwner?IconButton(
                           onPressed:()=>handleDeletePost(context),
-                          icon:Icon(Icons.more_vert),
+                          icon:Icon(Icons.restore_from_trash),
 
                         ):Text(" "),
 

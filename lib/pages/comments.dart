@@ -35,6 +35,7 @@ class CommentsState extends State<Comments> {
   final String postOwnerId;
   final String postMediaUrl;
   int commentCount;
+
   @override
 
   CommentsState({
@@ -135,12 +136,15 @@ class Comment extends StatelessWidget {
   final String comment;
   final Timestamp timestamp;
 
+
+
   Comment({
     this.username,
     this.userId,
     this.avatarUrl,
     this.comment,
     this.timestamp,
+
   });
 
   factory Comment.fromDocument(DocumentSnapshot doc) {
@@ -153,6 +157,7 @@ class Comment extends StatelessWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -162,7 +167,7 @@ class Comment extends StatelessWidget {
           leading: CircleAvatar(
             backgroundImage: CachedNetworkImageProvider(avatarUrl),
           ),
-          subtitle: Text(timeago.format(timestamp.toDate())),
+          //subtitle: Text(timeago.format(DateTime.now().subtract(new Duration(seconds: 1)))),
         ),
         Divider(),
       ],

@@ -1,3 +1,5 @@
+import 'package:authorized_app/models/user.dart';
+import 'package:authorized_app/pages/comments.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -94,14 +96,15 @@ class ActivityFeedItem extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => PostScreen(
           postId: postId,
-          userId: userId,
+          userId: currentUser.id,
         ),
       ),
     );
   }
 
   configureMediaPreview(BuildContext context) {
-    if (type == "like" || type == 'comment') {
+    if (type == 'like' || type == 'comment') {
+      type == 'comment' ?activityItemText = 'replied: $commentData':activityItemText = 'hh';
       mediaPreview = GestureDetector(
         onTap: ()=> showPost(context),
         child: Container(
@@ -123,15 +126,11 @@ class ActivityFeedItem extends StatelessWidget {
       mediaPreview = Text('');
     }
 
-    if (type == 'comment') {
-      activityItemText = 'replied: $commentData';
-    } else if (type == 'follow') {
+
+    if (type == 'follow') {
       activityItemText = "is following you";
-    } else if (type == 'like') {
-      activityItemText = "liked your post";
-    } else {
-      activityItemText = "Error: Unknown type '$type'";
     }
+
   }
 
   @override

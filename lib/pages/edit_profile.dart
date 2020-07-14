@@ -36,7 +36,7 @@ class _EditProfileState extends State<EditProfile> {
     });
     DocumentSnapshot doc = await userRef.document(widget.currentUserId).get();
     user = User.fromDocument(doc);
-    displayNameContoller.text = user.displayname;
+    displayNameContoller.text = user.username;
     bioContoller.text = user.bio;
     setState(() {
       isloading = false;
@@ -74,7 +74,7 @@ class _EditProfileState extends State<EditProfile> {
           controller: bioContoller,
           decoration: InputDecoration(
             hintText: "Update Bio",
-            errorText: _bioValid?null:"DisplayName too short",
+            errorText: _bioValid?null:"bio too short",
           ),
         )
       ],
@@ -91,7 +91,7 @@ class _EditProfileState extends State<EditProfile> {
     });
     if(_displayNameValid&&_bioValid){
       userRef.document(widget.currentUserId).updateData({
-        "displayName" :displayNameContoller.text,
+        "username" :displayNameContoller.text,
         "bio":bioContoller.text,
       });
       SnackBar snackBar=SnackBar(content: Text("Profile updated"),);
